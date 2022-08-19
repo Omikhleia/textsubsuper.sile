@@ -1,0 +1,44 @@
+\begin[papersize=a6,class=plain]{document}
+\neverindent
+\nofolios
+\use[module=packages.textsubsuper]
+\language[main=en]
+\font[family=Libertinus Serif, size=12]
+
+\center{\font[weight=700, size=14]{Subscripts & superscripts}}
+
+\bigskip
+
+Some fonts, such as Libertinus Serif, have fairly decent looking superscript
+and subscript characters:
+
+\smallskip
+\quad{}16\textsuperscript{th} century
+    = Fr. \language[main=fr]{\font[features=+smcp]{xvi}\textsuperscript{e} siècle}.
+
+\quad{}1\textsuperscript{st}, 2\textsuperscript{nd}, 3\textsuperscript{rd}, etc.
+
+\quad{}note\textsuperscript{4a}.
+
+\quad{}Fr. n\textsuperscript{os} 5–6. M\textsuperscript{lle} Rose.
+
+\quad{}H\textsubscript{2}O.
+
+\bigskip
+
+Other fonts might not have good designs for them, or authors may prefer fake
+versions anyway:
+
+\smallskip
+\quad{}16\textsuperscript[fake=true]{th} century
+    = Fr. \language[main=fr]{\font[features=+smcp]{xvi}\textsuperscript[fake=true]{e} siècle}.
+
+\quad{}1\textsuperscript[fake=true]{st}, 2\textsuperscript[fake=true]{nd}, 3\textsuperscript[fale=true]{rd}, etc.
+
+\quad{}note\textsuperscript[fake=true]{4a}.
+
+\quad{}Fr. n\textsuperscript[fake=true]{os} 5–6. M\textsuperscript[fake=true]{lle} Rose.
+
+\quad{}H\textsubscript[fake=true]{2}O.
+
+\end{document}
