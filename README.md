@@ -1,6 +1,7 @@
 # textsubsuper.sile
 
 [![license](https://img.shields.io/github/license/Omikhleia/textsubsuper.sile)](LICENSE)
+[![Luarocks](https://img.shields.io/luarocks/v/Omikhleia/textsubsuper.sile?label=Luarocks&logo=Lua)](https://luarocks.org/modules/Omikhleia/textsubsuper.sile)
 
 This package for the [SILE](https://github.com/sile-typesetter/sile) typesetting
 system provides ways to typeset superscripted or subscripted text properly,
