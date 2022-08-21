@@ -1,6 +1,7 @@
 # textsubsuper.sile
 
 [![license](https://img.shields.io/github/license/Omikhleia/textsubsuper.sile)](LICENSE)
+[![Luacheck](https://img.shields.io/github/workflow/status/Omikhleia/textsubsuper.sile/Luacheck?label=Luacheck&logo=Lua)](https://github.com/Omikhleia/textsubsuper.sile/actions?workflow=Luacheck)
 [![Luarocks](https://img.shields.io/luarocks/v/Omikhleia/textsubsuper.sile?label=Luarocks&logo=Lua)](https://luarocks.org/modules/Omikhleia/textsubsuper.sile)
 
 This package for the [SILE](https://github.com/sile-typesetter/sile) typesetting
