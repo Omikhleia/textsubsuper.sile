@@ -1,7 +1,7 @@
 --
 -- Text superscript and subscript package for SILE
--- using OpenType features when available.
--- 2021-2022, Didier Willis
+-- using OpenType features when available and enabled.
+-- 2021-2022, 2023 Didier Willis
 -- Derived from an idea sketched by Simon Cozens
 -- in https://github.com/sile-typesetter/sile/issues/1258
 -- License: MIT
@@ -89,6 +89,13 @@ function package:_init ()
 end
 
 function package.declareSettings (_)
+  SILE.settings:declare({
+    parameter = "textsubsuper.fake",
+    type = "boolean",
+    default = false,
+    help = "If true, fake superscripts or subscripts are used by default"
+  })
+
   SILE.settings:declare({
     parameter = "textsubsuper.scale",
     type = "integer",
@@ -178,7 +185,8 @@ function package:registerCommands ()
 
   self:registerCommand("textsuperscript", function (options, content)
     if type(content) ~= "table" then SU.error("Expected a table content in textsuperscript") end
-    if SU.boolean(options.fake, false) then
+    local fake = SU.boolean(options.fake, SILE.settings:get("textsubsuper.fake"))
+    if fake then
       SILE.call("textsuperscript:fake", {}, content)
       return
     end
@@ -192,7 +200,8 @@ function package:registerCommands ()
 
   self:registerCommand("textsubscript", function (options, content)
     if type(content) ~= "table" then SU.error("Expected a table content in textsubscript") end
-    if SU.boolean(options.fake, false) then
+    local fake = SU.boolean(options.fake, SILE.settings:get("textsubsuper.fake"))
+    if fake then
       SILE.call("textsubscript:fake", {}, content)
       return
     end
@@ -331,7 +340,9 @@ ugly in most cases. Fake superscripts or subscripts will also be used if such
 a case occurs.
 
 Would you actually prefer this fake variant, the \autodoc:parameter{fake=true}
-option on the above-mentioned commands enforces it.
+option on the above-mentioned commands enforces it. Would you want this
+to be the default choice globally, the \autodoc:setting{textsubsuper.fake}
+setting may also be set to true.
 
 In his afterword, Bringhurst also notes: “It remains the case that I have
 never yet tested a perfect font, no matter whether it came in the form of
