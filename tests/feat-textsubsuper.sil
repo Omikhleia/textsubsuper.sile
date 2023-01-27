@@ -3,25 +3,24 @@
 \neverindent
 \use[module=packages.textsubsuper]
 
-% 1. Test with default font.
+% 1A. Test with default font.
 (Default font) H\textsubscript{2}O.
 
 16\textsuperscript{th} century, \font[features=+smcp]{xvi}\textsuperscript{e} siècle.
 
 Superscript\textsuperscript{123}.
 
-% 2. Test with default font, italic
-\font[style=italic]
-
+% 1B. Test with default font, italic
+\begin[style=italic]{font}
 (Default font italic)  H\textsubscript{2}O.
 
 16\textsuperscript{th} century, \font[features=+smcp]{xvi}\textsuperscript{e} siècle.
 
 Superscript\textsuperscript{123}.
 
-% 3. Test with a font having true sub/superscripted characters
-\font[family=Libertinus Serif]
-
+\end{font}
+% 2A. Test with a font having true sub/superscripted characters
+\begin[family=Libertinus Serif]{font}
 (Libertinus, font sub/superscripts) H\textsubscript{2}O.
 
 16\textsuperscript{th} century, \font[features=+smcp]{xvi}\textsuperscript{e} siècle.
@@ -34,4 +33,30 @@ Superscript\textsuperscript{123}.
 
 Superscript\textsuperscript[fake=true]{123}.
 
+\end{font}
+% 2B. Test with a font having true sub/superscripted characters, italic
+\begin[family=Libertinus Serif, style=italic]{font}
+(Libertinus italic, font sub/superscripts) H\textsubscript{2}O.
+
+16\textsuperscript{th} century, \font[features=+smcp]{xvi}\textsuperscript{e} siècle.
+
+Superscript\textsuperscript{123}.
+
+(Libertinus italic, fake sub/superscripts) H\textsubscript[fake=true]{2}O.
+
+16\textsuperscript[fake=true]{th} century, \font[features=+smcp]{xvi}\textsuperscript[fake=true]{e} siècle.
+
+Superscript\textsuperscript[fake=true]{123}.
+
+\end{font}
+% 3A. Test with fake sub/superscripted by default
+\begin[family=Libertinus Serif]{font}
+\set[parameter=textsubsuper.fake, value=true]
+(Libertinus, sub/superscripts default to fake) H\textsubscript{2}O.
+
+16\textsuperscript{th} century, \font[features=+smcp]{xvi}\textsuperscript{e} siècle.
+
+Superscript\textsuperscript{123}.
+
+\end{font}
 \end{document}

@@ -13,7 +13,7 @@ As it names imply, it is not a general-purpose super/subscript package, but it
 operates on text:
 
 - Detecting and using, when available, OpenType font features for “real” superscripts
-  or subscripts
+  or subscripts;
 - Scaling and raising (or lowering) characters in the “fake” case, with special
   provisions for digits and character weight.
 
