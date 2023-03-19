@@ -98,7 +98,7 @@ function package.declareSettings (_)
 
   SILE.settings:declare({
     parameter = "textsubsuper.scale",
-    type = "integer",
+    type = "number",
     default = 0.66,
     help = "Size scaling ratio of a fake superscript or subscript"
   })
