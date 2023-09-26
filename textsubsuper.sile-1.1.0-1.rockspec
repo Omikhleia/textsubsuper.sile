@@ -1,7 +1,9 @@
+rockspec_format = "3.0"
 package = "textsubsuper.sile"
-version = "dev-1"
+version = "1.1.0-1"
 source = {
   url = "git+https://github.com/Omikhleia/textsubsuper.sile.git",
+  tag = "v1.1.0",
 }
 description = {
   summary = "Real or fake superscripts and subscripts for the SILE typesetting system.",
@@ -15,7 +17,7 @@ description = {
 }
 dependencies = {
   "lua >= 5.1",
-  "silex.sile",
+  "silex.sile >= 0.3.0",
 }
 build = {
   type = "builtin",
