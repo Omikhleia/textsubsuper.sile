@@ -86,6 +86,8 @@ end
 function package:_init ()
   base._init(self)
   self.class:loadPackage("inputfilter")
+  self.class:loadPackage("raiselower")
+  self.class:loadPackage("scalebox")
 end
 
 function package.declareSettings (_)
@@ -148,17 +150,17 @@ function package:registerCommands ()
       if not tonumber(char) then
         result[#result+1] = self.class.packages.inputfilter:createCommand(
           content.pos, content.col, content.line,
-          "textsubsuper:scale", {
-            xRatio = args.xScale,
-            yRatio = args.yScaleOther
+          "scalebox", {
+            xratio = args.xScale,
+            yratio = args.yScaleOther
           }, { char }
         )
       else
         result[#result+1] = self.class.packages.inputfilter:createCommand(
           content.pos, content.col, content.line,
-          "textsubsuper:scale", {
-            xRatio = args.xScale,
-            yRatio = args.yScaleNumber
+          "scalebox", {
+            xratio = args.xScale,
+            yratio = args.yScaleNumber
           }, { char }
         )
       end
@@ -219,7 +221,6 @@ function package:registerCommands ()
   -- FAKE (SCALED AND RAISED) SUPERSCRIPT OR SUBSCRIPT
 
   self:registerCommand("textsuperscript:fake", function (_, content)
-    SILE.require("packages/raiselower")
     local italicAngle = getItalicAngle()
     local weight = getWeightClass()
 
@@ -244,7 +245,6 @@ function package:registerCommands ()
   end, "Typeset a fake (raised, scaled) superscript content.")
 
   self:registerCommand("textsubscript:fake", function (_, content)
-    SILE.require("packages/raiselower")
     local italicAngle = getItalicAngle()
     local weight = getWeightClass()
 
@@ -265,39 +265,6 @@ function package:registerCommands ()
     SILE.call("kern", { width = xOffset })
   end, "Typeset a fake (lowered, scaled) subscript content.")
 
-  -- RE-SCALING BY SOME RATIOS
-
-  self:registerCommand("textsubsuper:scale", function (options, content)
-    -- Here assume the ouputter to be libtexpdf
-    -- This is supposed to be checked earlier above.
-    local pdf = require("justenoughlibtexpdf")
-
-    local hbox = SILE.call("hbox", {}, content)
-    table.remove(SILE.typesetter.state.nodes) -- Remove the box from queue
-
-    local xRatio, yRatio = options.xRatio, options.yRatio
-    SILE.typesetter:pushHbox({
-      width = hbox.width * xRatio,
-      height = SILE.length(),
-      depth = SILE.length(),
-      outputYourself = function(node, typesetter, line)
-        local X = typesetter.frame.state.cursorX
-        local Y = typesetter.frame.state.cursorY
-        local x0 = X:tonumber()
-        local y0 = -Y:tonumber()
-        typesetter.frame.state.cursorY = Y
-        pdf:gsave()
-        pdf.setmatrix(1, 0, 0, 1, x0, y0)
-        pdf.setmatrix(xRatio, 0, 0, yRatio, 0, 0)
-        pdf.setmatrix(1, 0, 0, 1, -x0, -y0)
-        hbox.outputYourself(hbox, typesetter, line)
-        pdf:grestore()
-        typesetter.frame.state.cursorX = X
-        typesetter.frame.state.cursorY = Y
-        typesetter.frame:advanceWritingDirection(node.width)
-      end
-    })
-  end, "Scale content by some horizontal and vertical ratios")
 end
 
 package.documentation = [[
