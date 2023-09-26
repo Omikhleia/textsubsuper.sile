@@ -33,7 +33,7 @@ versions anyway:
 \quad{}16\textsuperscript[fake=true]{th} century
     = Fr. \language[main=fr]{\font[features=+smcp]{xvi}\textsuperscript[fake=true]{e} siècle}.
 
-\quad{}1\textsuperscript[fake=true]{st}, 2\textsuperscript[fake=true]{nd}, 3\textsuperscript[fale=true]{rd}, etc.
+\quad{}1\textsuperscript[fake=true]{st}, 2\textsuperscript[fake=true]{nd}, 3\textsuperscript[fake=true]{rd}, etc.
 
 \quad{}note\textsuperscript[fake=true]{4a}.
 
