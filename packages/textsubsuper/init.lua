@@ -169,17 +169,11 @@ function package:registerCommands ()
   end
 
   local function rescaleContent(content)
-    local transformed
-    if SILE.outputter._name ~= "libtexpdf" then
-      -- Not supported
-      transformed = content
-    else
-      transformed = self.class.packages.inputfilter:transformContent(content, rescaleFilter, {
-        xScale = 1,
-        yScaleNumber = SILE.settings:get("textsubsuper.vscale.number"),
-        yScaleOther = SILE.settings:get("textsubsuper.vscale.other"),
-      })
-    end
+    local transformed = self.class.packages.inputfilter:transformContent(content, rescaleFilter, {
+      xScale = 1,
+      yScaleNumber = SILE.settings:get("textsubsuper.vscale.number"),
+      yScaleOther = SILE.settings:get("textsubsuper.vscale.other"),
+    })
     SILE.process(transformed)
    end
 

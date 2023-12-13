@@ -6,7 +6,7 @@
 
 This package for the [SILE](https://github.com/sile-typesetter/sile) typesetting
 system provides ways to typeset superscripted or subscripted text properly,
-using real characters (i.e. based on OpênType font properties) or fake (scaled
+using real (i.e. based on OpênType font properties) or fake (scaled
 and raised) characters, with several tuning options.
 
 As it names imply, it is not a general-purpose super/subscript package, but it
@@ -24,7 +24,7 @@ output for superscripted or subscripted text, with appropriate fallbacks.
 
 ## Installation
 
-This package require SILE v0.14 or upper.
+This package require SILE v0.14.13 or upper.
 
 Installation relies on the **luarocks** package manager.
 
