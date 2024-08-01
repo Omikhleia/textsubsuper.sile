@@ -6,6 +6,9 @@
 -- in https://github.com/sile-typesetter/sile/issues/1258
 -- License: MIT
 --
+require("silex.ast") -- Compatibility shims
+require("silex.types") -- Compatibility shims
+
 local base = require("packages.base")
 
 local package = pl.class(base)
@@ -36,7 +39,7 @@ local function textFeatCaching (options, text, status)
 end
 
 local function checkFontFeatures (features, content)
-  local text = SU.contentToString(content)
+  local text = SU.ast.contentToString(content)
   if tonumber(text) ~= nil then
     -- Avoid caching any sequence of digits. Plus, we want
     -- consistency here.
@@ -129,14 +132,14 @@ function package.declareSettings (_)
   SILE.settings:declare({
     parameter = "textsubsuper.offset.superscript",
     type = "measurement",
-    default = SILE.measurement("0.70ex"),
+    default = SILE.types.measurement("0.70ex"),
     help = "Offset of a fake superscript above the baseline (logically in a font-relative unit such as ex)"
   })
 
   SILE.settings:declare({
     parameter = "textsubsuper.offset.subscript",
     type = "measurement",
-    default = SILE.measurement("0.25ex"),
+    default = SILE.types.measurement("0.25ex"),
     help = "Offset of a fake subscript below the baseline (logically in a font-relative unit such as ex)"
   })
 end
@@ -189,7 +192,7 @@ function package:registerCommands ()
     if checkFontFeatures("+sups", content) then
       SILE.call("font", { features="+sups" }, content)
     else
-      SU.debug("textsubsuper", "No true superscripts for '"..SU.contentToString(content).."', fallback to scaling")
+      SU.debug("textsubsuper", "No true superscripts for '"..SU.ast.contentToString(content).."', fallback to scaling")
       SILE.call("textsuperscript:fake", {}, content)
     end
   end, "Typeset a superscript text content.")
@@ -204,10 +207,10 @@ function package:registerCommands ()
     if checkFontFeatures("+subs", content) then
       SILE.call("font", { features="+subs" }, content)
     elseif checkFontFeatures("+sinf", content) then
-      SU.debug("textsubsuper", "No true subscripts for '"..SU.contentToString(content).."', fallback to scientific inferiors")
+      SU.debug("textsubsuper", "No true subscripts for '"..SU.ast.contentToString(content).."', fallback to scientific inferiors")
       SILE.call("font", { features="+sinf" }, content)
     else
-      SU.debug("textsubsuper", "No true subscripts for '"..SU.contentToString(content).."', fallback to scaling")
+      SU.debug("textsubsuper", "No true subscripts for '"..SU.ast.contentToString(content).."', fallback to scaling")
       SILE.call("textsubscript:fake", {}, content)
     end
   end, "Typeset a subscript text content.")
@@ -222,7 +225,7 @@ function package:registerCommands ()
     local ySize = ratio * SILE.settings:get("font.size")
     local yOffset = SILE.settings:get("textsubsuper.offset.superscript")
     local xOffset = -math.sin(italicAngle * math.pi / 180) * yOffset
-    SILE.call("kern", { width = xOffset:absolute() + SILE.measurement("0.1pt") })
+    SILE.call("kern", { width = xOffset:absolute() + SILE.types.measurement("0.1pt") })
     SILE.call("raise", { height = yOffset }, function ()
       -- Some font have +onum enabled by default...
       -- Some don't even have it (e.g. Brill), but support +lnum for enforcing lining
