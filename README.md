@@ -1,30 +1,23 @@
 # textsubsuper.sile
 
-[![license](https://img.shields.io/github/license/Omikhleia/textsubsuper.sile?label=License)](LICENSE)
+[![License](https://img.shields.io/github/license/Omikhleia/textsubsuper.sile?label=License)](LICENSE)
 [![Luacheck](https://img.shields.io/github/actions/workflow/status/Omikhleia/textsubsuper.sile/luacheck.yml?branch=main&label=Luacheck&logo=Lua)](https://github.com/Omikhleia/textsubsuper.sile/actions?workflow=Luacheck)
 [![Luarocks](https://img.shields.io/luarocks/v/Omikhleia/textsubsuper.sile?label=Luarocks&logo=Lua)](https://luarocks.org/modules/Omikhleia/textsubsuper.sile)
 
-This package for the [SILE](https://github.com/sile-typesetter/sile) typesetting
-system provides ways to typeset superscripted or subscripted text properly,
-using real (i.e. based on OpênType font properties) or fake (scaled
-and raised) characters, with several tuning options.
+This package for the [SILE](https://github.com/sile-typesetter/sile) typesetting system provides ways to typeset superscripted or subscripted text properly, using real (i.e. based on OpênType font properties) or fake (scaled and raised) characters, with several tuning options.
 
-As it names imply, it is not a general-purpose super/subscript package, but it
-operates on text:
+As it names imply, it is not a general-purpose super/subscript package, but it operates on text:
 
-- Detecting and using, when available, OpenType font features for “real” superscripts
-  or subscripts;
-- Scaling and raising (or lowering) characters in the “fake” case, with special
-  provisions for digits and character weight.
+- Detecting and using, when available, OpenType font features for “real” superscripts or subscripts;
+- Scaling and raising (or lowering) characters in the “fake” case, with special provisions for digits and character weight.
 
-In other words, it aims at providing a standardized way to get a “decent typographical”
-output for superscripted or subscripted text, with appropriate fallbacks.
+In other words, it aims at providing a standardized way to get a “decent typographical” output for superscripted or subscripted text, with appropriate fallbacks.
 
 ![superscripts and subscripts](textsubsuper.png "Superscripts and subscripts")
 
 ## Installation
 
-This package require SILE v0.14.13 or upper.
+This package require SILE v0.15.12.
 
 Installation relies on the **luarocks** package manager.
 
@@ -41,10 +34,8 @@ luarocks install textsubsuper.sile
 Examples are provided in the [examples](./examples) folder.
 
 The in-code package documentation may also be useful.
-A readable version of the documentation is included in the User Manual for
-the [resilient.sile](https://github.com/Omikhleia/resilient.sile) collection
-of classes and packages.
+A readable version of the documentation is included in the User Manual for the [resilient.sile](https://github.com/Omikhleia/resilient.sile) collection of classes and packages.
 
 ## License
 
-All SILE-related code and samples in this repository are released under the MIT License, (c) 2021-2023 Omikhleia.
+The code and samples in this repository are released under the GNU General Public License v3.0, (c) 2021-2025 Omikhleia.

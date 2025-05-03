@@ -1,14 +1,22 @@
 --
--- Text superscript and subscript package for SILE
--- using OpenType features when available and enabled.
--- 2021-2022, 2023 Didier Willis
--- Derived from an idea sketched by Simon Cozens
--- in https://github.com/sile-typesetter/sile/issues/1258
--- License: MIT
+-- Text superscript and subscript package for SILE, using OpenType features when available and enabled.
 --
-require("silex.ast") -- Compatibility shims
-require("silex.types") -- Compatibility shims
-
+-- License: GPL-3.0-or-later
+--
+-- Copyright (C) 2021-2025 Didier Willis
+-- This program is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU General Public License as published by
+-- the Free Software Foundation, either version 3 of the License, or
+-- (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+--
+-- You should have received a copy of the GNU General Public License
+-- along with this program.  If not, see <https://www.gnu.org/licenses/>.
+--
 local base = require("packages.base")
 
 local package = pl.class(base)
@@ -16,7 +24,7 @@ package._name = "textsubsuper"
 
 local textFeatCache = {}
 
-local _key = function (options, text)
+local function _key (options, text)
   -- We don't use the size in the cache key, as we don't expect it to
   -- change whether features are supported or not...
   return table.concat({
@@ -30,6 +38,11 @@ local _key = function (options, text)
     }, ";")
 end
 
+--- Cache the result of the font features check.
+-- @tparam table   options  The font options used to check the features.
+-- @tparam string  text     The text content used to check the features.
+-- @tparam boolean status   The result of the check.
+-- @treturn boolean  The result of the check (cached).
 local function textFeatCaching (options, text, status)
   local key = _key(options, text)
   if textFeatCache[key] == nil then
@@ -38,11 +51,19 @@ local function textFeatCaching (options, text, status)
   return status
 end
 
+--- Check if the font features are supported by the font.
+-- It shapes a string of text with the given font options and compares
+-- the result with the same string of text shaped with the default font
+-- options. If the results are different, it should mean that the font features
+-- are supported (i.e. they had an effect).
+-- @tparam string  features  The font features to check.
+-- @tparam AST     content   The text content node to check.
+-- @treturn boolean  true if the features are supported, false otherwise.
 local function checkFontFeatures (features, content)
   local text = SU.ast.contentToString(content)
   if tonumber(text) ~= nil then
-    -- Avoid caching any sequence of digits. Plus, we want
-    -- consistency here.
+    -- Avoid caching any sequence of digits.
+    -- Plus, we want consistency here.
     text="0123456789"
   end
   local fontOptions = SILE.font.loadDefaults({ features = features })
@@ -67,6 +88,10 @@ local function checkFontFeatures (features, content)
   return textFeatCaching(fontOptions, text, true)
 end
 
+--- Get the italic angle of the current font,
+-- so we can take into account an italic correction for raised or lowered
+-- superscripts or subscripts.
+-- @treturn number  The italic angle of the current font.
 local function getItalicAngle ()
   local ot = require("core.opentype-parser")
   local fontoptions = SILE.font.loadDefaults({})
@@ -75,6 +100,43 @@ local function getItalicAngle ()
   return font.post.italicAngle
 end
 
+--- Rescale text nodes to be used as a superscript or subscript.
+-- This is a handler of the "inputfilter" package.
+-- @tparam AST    node     The node to be rescaled.
+-- @tparam AST    content  The original content.
+-- @tparam table  args     The arguments for the rescaling (xScale, yScaleNumber, yScaleOther).
+-- @treturn AST  The rescaled elements (as a series of AST nodes with rescaling commands).
+local function rescaleFilter (node, content, args)
+  if type(node) == "table" then return node end
+  local result = {}
+  local chars = SU.splitUtf8(node)
+  for _, char in ipairs(chars) do
+    if not tonumber(char) then
+      result[#result+1] = SU.ast.createCommand("scalebox", {
+        xratio = args.xScale,
+        yratio = args.yScaleOther
+      }, { char }, {
+        lno = content.lno,
+        col = content.col,
+        pos = content.pos
+      })
+    else
+      result[#result+1] = SU.ast.createCommand("scalebox", {
+        xratio = args.xScale,
+        yratio = args.yScaleNumber
+      }, { char }, {
+        lno = content.lno,
+        col = content.col,
+        pos = content.pos
+      })
+    end
+  end
+  return result
+end
+
+--- Get the weight class of the current font.
+-- This is used to determine the weight adjustment for the superscript or subscript.
+-- @treturn number  The weight class of the current font.
 local function getWeightClass ()
   -- Provided we return it in the font parser, maybe we could
   -- rather do:
@@ -88,9 +150,9 @@ end
 
 function package:_init ()
   base._init(self)
-  self.class:loadPackage("inputfilter")
-  self.class:loadPackage("raiselower")
-  self.class:loadPackage("scalebox")
+  self:loadPackage("inputfilter")
+  self:loadPackage("raiselower")
+  self:loadPackage("scalebox")
 end
 
 function package.declareSettings (_)
@@ -145,31 +207,6 @@ function package.declareSettings (_)
 end
 
 function package:registerCommands ()
-  local function rescaleFilter (node, content, args)
-    if type(node) == "table" then return node end
-    local result = {}
-    local chars = SU.splitUtf8(node)
-    for _, char in ipairs(chars) do
-      if not tonumber(char) then
-        result[#result+1] = self.class.packages.inputfilter:createCommand(
-          content.pos, content.col, content.line,
-          "scalebox", {
-            xratio = args.xScale,
-            yratio = args.yScaleOther
-          }, { char }
-        )
-      else
-        result[#result+1] = self.class.packages.inputfilter:createCommand(
-          content.pos, content.col, content.line,
-          "scalebox", {
-            xratio = args.xScale,
-            yratio = args.yScaleNumber
-          }, { char }
-        )
-      end
-    end
-    return result
-  end
 
   local function rescaleContent(content)
     local transformed = self.class.packages.inputfilter:transformContent(content, rescaleFilter, {
@@ -187,7 +224,7 @@ function package:registerCommands ()
     local fake = SU.boolean(options.fake, SILE.settings:get("textsubsuper.fake"))
     if fake then
       SILE.call("textsuperscript:fake", {}, content)
-      return
+      return -- We are done here
     end
     if checkFontFeatures("+sups", content) then
       SILE.call("font", { features="+sups" }, content)
@@ -202,7 +239,7 @@ function package:registerCommands ()
     local fake = SU.boolean(options.fake, SILE.settings:get("textsubsuper.fake"))
     if fake then
       SILE.call("textsubscript:fake", {}, content)
-      return
+      return -- We are done here
     end
     if checkFontFeatures("+subs", content) then
       SILE.call("font", { features="+subs" }, content)
