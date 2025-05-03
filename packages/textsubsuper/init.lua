@@ -204,6 +204,20 @@ function package.declareSettings (_)
     default = SILE.types.measurement("0.25ex"),
     help = "Offset of a fake subscript below the baseline (logically in a font-relative unit such as ex)"
   })
+
+  -- The features we want to use for numbers in superscripts and subscripts:
+  -- Some font have +onum enabled by default.
+  -- Some don't even have it (e.g. Brill), but support +lnum for enforcing lining figures.
+  -- We try to ensure we are not using oldstyle numbers, nor tabular numbers (fixed-width),
+  -- but rather lining numbers (uniform-height and baseline-aligned) and proportional numbers (variable-width).
+  -- Fonts support these features in different ways, so it's hard to know which one to use.
+  -- This might be somewhat font-dependent.
+  SILE.settings:declare({
+      parameter = "textsubsuper.features.number",
+      type = "string",
+      default = "+lnum +pnum -onum -tnum",
+      help = "Font features to use for numbers in superscripts and subscripts"
+    })
 end
 
 function package:registerCommands ()
@@ -264,13 +278,10 @@ function package:registerCommands ()
     local xOffset = -math.sin(italicAngle * math.pi / 180) * yOffset
     SILE.call("kern", { width = xOffset:absolute() + SILE.types.measurement("0.1pt") })
     SILE.call("raise", { height = yOffset }, function ()
-      -- Some font have +onum enabled by default...
-      -- Some don't even have it (e.g. Brill), but support +lnum for enforcing lining
-      -- figures. We try to ensure we are not using oldstyle numbers...
       SILE.call("font", {
         size = ySize,
         weight = weight == 400 and (weight + SILE.settings:get("textsubsuper.bolder")) or weight,
-        features = "+lnum -onum",
+        features = SILE.settings:get("textsubsuper.features.number"),
       }, function ()
         rescaleContent(content)
       end)
@@ -291,7 +302,7 @@ function package:registerCommands ()
       SILE.call("font", {
         size = ySize,
         weight = weight == 400 and (weight + SILE.settings:get("textsubsuper.bolder")) or weight,
-        features = "+lnum +onum",
+        features = SILE.settings:get("textsubsuper.features.number"),
       }, function ()
         rescaleContent(content)
       end)
@@ -380,6 +391,13 @@ Settings \autodoc:setting{textsubsuper.vscale.number} and
 to obtain that effect\footnote{This feature is currently only supported
 with the \code{libtexpdf} backend.}.
 Their default values, again, are obviously empirical.
+
+The \autodoc:setting{textsubsuper.features.number} setting allows
+to specify the font features to use for numbers in superscripts
+and subscripts. By default, it is set to \code{+lnum +pnum -onum -tnum},
+which should be a good choice for most fonts, although fonts support
+these features in different ways.
+
 \end{document}
 ]]
 
