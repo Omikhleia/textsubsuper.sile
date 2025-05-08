@@ -1,9 +1,9 @@
 rockspec_format = "3.0"
 package = "textsubsuper.sile"
-version = "2.0.0-1"
+version = "2.1.0-1"
 source = {
   url = "git+https://github.com/Omikhleia/textsubsuper.sile.git",
-  tag = "v2.0.0",
+  tag = "v2.1.0",
 }
 description = {
   summary = "Real or fake superscripts and subscripts for the SILE typesetting system.",

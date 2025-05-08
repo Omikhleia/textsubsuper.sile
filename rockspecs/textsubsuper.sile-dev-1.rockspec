@@ -12,7 +12,7 @@ description = {
     or fake characters (i.e. scaled and raised), with several tuning options.
   ]],
   homepage = "https://github.com/Omikhleia/textsubsuper.sile",
-  license = "GPL-3.0",
+  license = "MIT",
 }
 dependencies = {
   "lua >= 5.1",
